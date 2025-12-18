@@ -13,9 +13,9 @@ dynamic_models:
       - name: model
         query: |
           SELECT
-            LOWER(TABLE_NAME) AS TABLE_NAME
+            LOWER(table_name) AS TABLE_NAME
           FROM DDAI_TRN_QAT.INFORMATION_SCHEMA.TABLES
-          WHERE TABLE_SCHEMA = 'CDM'
+          WHERE LOWER(TABLE_SCHEMA) = LOWER('CDM')
             AND TABLE_TYPE IN ('BASE TABLE', 'VIEW')
           ORDER BY TABLE_NAME
     sql: |

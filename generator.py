@@ -1,7 +1,8 @@
 import os
 import yaml
-from snowflake.snowpark import Session
-from snowflake.snowpark.exceptions import SnowparkSessionException
+import psycopg2
+from psycopg2.extras import RealDictCursor
+from dotenv import dotenv_values
 
 # Project root
 def find_project_root(start_path):
@@ -41,26 +42,28 @@ def get_env_var(var_name):
         return env_values[var_name]
     return os.environ.get(var_name)
 
-# Snowflake client configuration
-def setup_snowflake_client():
+# PostgreSQL client configuration
+def setup_postgres_client():
     connection_parameters = {
-        "account": get_env_var("SNOWFLAKE_ACCOUNT"),
-        "user": get_env_var("SNOWFLAKE_USERNAME"),
-        "password": get_env_var("SNOWFLAKE_PASSWORD"),
-        "warehouse": get_env_var("SNOWFLAKE_WAREHOUSE")
+        "host": get_env_var("POSTGRES_HOST"),
+        "port": get_env_var("POSTGRES_PORT") or "5432",
+        "database": get_env_var("POSTGRES_DATABASE"),
+        "user": get_env_var("POSTGRES_USER"),
+        "password": get_env_var("POSTGRES_PASSWORD")
     }
 
     # Check if all required parameters are set
-    for key, value in connection_parameters.items():
-        if not value:
-            raise ValueError(f"SNOWFLAKE_{key.upper()} environment variable not set.")
+    required_params = ["host", "database", "user", "password"]
+    for key in required_params:
+        if not connection_parameters[key]:
+            raise ValueError(f"POSTGRES_{key.upper()} environment variable not set.")
 
     try:
-        session = Session.builder.configs(connection_parameters).create()
-        print("Successfully connected to Snowflake!")
-        return session
-    except SnowparkSessionException as e:
-        raise ConnectionError(f"Failed to connect to Snowflake: {e}")
+        conn = psycopg2.connect(**connection_parameters)
+        print("Successfully connected to PostgreSQL!")
+        return conn
+    except psycopg2.Error as e:
+        raise ConnectionError(f"Failed to connect to PostgreSQL: {e}")
 
 # YAML file config - Load from dynamic_models.yml
 def load_yaml_config():
@@ -74,30 +77,34 @@ def load_yaml_config():
     with open(yaml_file_path, 'r') as yaml_file:
         return yaml.safe_load(yaml_file)
 
-# Snowflake - Get customers
-def get_customers_from_snowflake(session, query):
+# PostgreSQL - Get customers
+def get_customers_from_postgres(conn, query):
     try:
-        results_df = session.sql(query).collect()
-        # Fetch both CUSTOMER and CUSTOMER_ENV
-        customers = [
-            {"customer": row['CUSTOMER'], "customer_env": row['CUSTOMER_ENV']}
-            for row in results_df
-        ]
-        for c in customers:
-            print(f"Customer: {c['customer']}, Env: {c['customer_env']}")
-        return customers
+        with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+            cursor.execute(query)
+            rows = cursor.fetchall()
+            # Fetch both CUSTOMER and CUSTOMER_ENV
+            customers = [
+                {"customer": row['customer'], "customer_env": row['customer_env']}
+                for row in rows
+            ]
+            for c in customers:
+                print(f"Customer: {c['customer']}, Env: {c['customer_env']}")
+            return customers
     except Exception as e:
-        raise RuntimeError(f"Error executing query in Snowflake: {e}")
+        raise RuntimeError(f"Error executing query in PostgreSQL: {e}")
 
 # Generate SQL files from config
-def generate_sql_files(session, config):
+def generate_sql_files(conn, config):
     for model_config in config["dynamic_models"]:
         customer_query = model_config["params"][0]["query"]
-        customers = get_customers_from_snowflake(session, customer_query)
+        customers = get_customers_from_postgres(conn, customer_query)
 
         model_query = model_config["params"][1]["query"]
-        model_results = session.sql(model_query).collect()
-        models = [row['TABLE_NAME'] for row in model_results]
+        with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+            cursor.execute(model_query)
+            model_results = cursor.fetchall()
+        models = [row['table_name'] for row in model_results]
 
         for customer_dict in customers:
             customer_name = customer_dict["customer"]
@@ -125,16 +132,16 @@ def generate_sql_files(session, config):
 
 # Main execution
 def main():
-    session = None
+    conn = None
     try:
-        session = setup_snowflake_client()
+        conn = setup_postgres_client()
         config = load_yaml_config()
-        generate_sql_files(session, config)
+        generate_sql_files(conn, config)
     except (ValueError, ConnectionError, FileNotFoundError, RuntimeError) as e:
         print(f"An error occurred: {e}")
     finally:
-        if session:
-            session.close()
+        if conn:
+            conn.close()
 
 if __name__ == "__main__":
     main()
