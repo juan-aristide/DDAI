@@ -9,7 +9,7 @@ dynamic_models:
           SELECT
             LOWER(CUSTOMER) AS CUSTOMER,
             LOWER(CUSTOMER_ENV) AS CUSTOMER_ENV
-          FROM INT.INT__DISTINCT_CUSTOMERS
+          FROM int."INT__DISTINCT_CUSTOMERS"
       - name: model
         query: |
           SELECT
