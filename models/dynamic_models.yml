@@ -9,12 +9,12 @@ dynamic_models:
           SELECT
             LOWER(CUSTOMER) AS CUSTOMER,
             LOWER(CUSTOMER_ENV) AS CUSTOMER_ENV
-          FROM DDAI_TRN_QAT.INT.INT__DISTINCT_CUSTOMERS
+          FROM INT.INT__DISTINCT_CUSTOMERS
       - name: model
         query: |
           SELECT
             LOWER(table_name) AS TABLE_NAME
-          FROM DDAI_TRN_QAT.INFORMATION_SCHEMA.TABLES
+          FROM INFORMATION_SCHEMA.TABLES
           WHERE LOWER(TABLE_SCHEMA) = LOWER('CDM')
             AND TABLE_TYPE IN ('BASE TABLE', 'VIEW')
           ORDER BY TABLE_NAME
