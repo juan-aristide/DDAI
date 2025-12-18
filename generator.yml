@@ -1,0 +1,49 @@
+name: Multi tenant models generator
+
+on:
+  workflow_dispatch:
+
+jobs:
+  generate_and_commit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12.4'
+
+      - name: Install dependencies
+        run: pip install -r .github/workflows/src/requirements.txt
+
+      - name: Run Python script
+        run: python .github/workflows/src/customer_models_generator.py
+        env:
+          # Pass Snowflake credentials as environment variables
+          SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          SNOWFLAKE_USERNAME: ${{ secrets.SNOWFLAKE_USERNAME }}
+          SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+          SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+
+      - name: Configure Git
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          
+      - name: Commit changes
+        run: |
+          git checkout -b multi_tenant_generation
+          git add ../models/customers/
+          git commit -m "Add generated SQL files"
+        working-directory: models
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: multi_tenant_generation
