@@ -14,13 +14,40 @@ def find_project_root(start_path):
             return None
         current_path = parent_path
 
+# Load .env file values (cached per execution)
+_env_values = None
+
+def _load_env_file():
+    """Load .env file values once and cache them"""
+    global _env_values
+    if _env_values is None:
+        start_path = os.path.dirname(os.path.abspath(__file__))
+        project_root = find_project_root(start_path)
+        if project_root:
+            env_file_path = os.path.join(project_root, ".env")
+            if os.path.exists(env_file_path):
+                _env_values = dotenv_values(env_file_path)
+            else:
+                _env_values = {}
+        else:
+            _env_values = {}
+    return _env_values
+
+# Get environment variable from .env file first, fallback to os.environ
+def get_env_var(var_name):
+    """Get environment variable from .env file first, fallback to os.environ"""
+    env_values = _load_env_file()
+    if var_name in env_values:
+        return env_values[var_name]
+    return os.environ.get(var_name)
+
 # Snowflake client configuration
 def setup_snowflake_client():
     connection_parameters = {
-        "account": os.environ.get("SNOWFLAKE_ACCOUNT"), 
-        "user": os.environ.get("SNOWFLAKE_USERNAME"), 
-        "password": os.environ.get("SNOWFLAKE_PASSWORD"),
-        "warehouse": os.environ.get("SNOWFLAKE_WAREHOUSE")
+        "account": get_env_var("SNOWFLAKE_ACCOUNT"),
+        "user": get_env_var("SNOWFLAKE_USERNAME"),
+        "password": get_env_var("SNOWFLAKE_PASSWORD"),
+        "warehouse": get_env_var("SNOWFLAKE_WAREHOUSE")
     }
 
     # Check if all required parameters are set
@@ -102,7 +129,7 @@ def main():
     try:
         session = setup_snowflake_client()
         config = load_yaml_config()
-        generate_sql_files(session, config)       
+        generate_sql_files(session, config)
     except (ValueError, ConnectionError, FileNotFoundError, RuntimeError) as e:
         print(f"An error occurred: {e}")
     finally:
