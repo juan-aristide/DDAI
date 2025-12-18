@@ -1,0 +1,22 @@
+version: 2
+
+dynamic_models:
+  - name: '{customer}__{model}'
+    location: models/customers/{customer_env}/cdm_{customer}/
+    params:
+      - name: customer
+        query: |
+          SELECT
+            LOWER(CUSTOMER) AS CUSTOMER,
+            LOWER(CUSTOMER_ENV) AS CUSTOMER_ENV
+          FROM DDAI_TRN_QAT.INT.INT__DISTINCT_CUSTOMERS
+      - name: model
+        query: |
+          SELECT
+            LOWER(TABLE_NAME) AS TABLE_NAME
+          FROM DDAI_TRN_QAT.INFORMATION_SCHEMA.TABLES
+          WHERE TABLE_SCHEMA = 'CDM'
+            AND TABLE_TYPE IN ('BASE TABLE', 'VIEW')
+          ORDER BY TABLE_NAME
+    sql: |
+      {{{{ customer_model('{model}', '{customer}') }}}}
