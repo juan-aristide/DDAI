@@ -50,15 +50,15 @@ jobs:
           git push origin --delete multi_tenant_generation || true
           git branch -D multi_tenant_generation || true
 
-      - name: Commit changes
-        run: |
-          git checkout -b multi_tenant_generation
-          git add ../models/customers/
-          git commit -m "Add generated SQL files"
-        working-directory: models
+      # - name: Commit changes
+      #   run: |
+      #     git checkout -b multi_tenant_generation
+      #     git add ../models/customers/
+      #     git commit -m "Add generated SQL files"
+      #   working-directory: models
 
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: multi_tenant_generation
+      # - name: Push changes
+      #   uses: ad-m/github-push-action@master
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     branch: multi_tenant_generation
