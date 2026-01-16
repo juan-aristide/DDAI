@@ -1,7 +1,23 @@
-name: Multi tenant models generator
+name: Tenants generator
 
 on:
   workflow_dispatch:
+    inputs:
+      database:
+        description: 'Select the database environment'
+        required: true
+        type: choice
+        options:
+          - DDAI_DW_NONPRD
+          - DDAI_DW_PRD
+      branch:
+        description: 'Branch to run the workflow from'
+        required: true
+        type: choice
+        options:
+          - master
+          - qat
+        default: qat
 
 jobs:
   generate_and_commit:
@@ -12,6 +28,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          ref: ${{ inputs.branch }}
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -27,7 +45,7 @@ jobs:
           # Pass PostgreSQL credentials as environment variables
           POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
           POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
-          POSTGRES_DATABASE: ${{ secrets.POSTGRES_DATABASE }}
+          POSTGRES_DATABASE: ${{ inputs.database }}
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
 
