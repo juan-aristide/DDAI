@@ -10,14 +10,6 @@ on:
         options:
           - DDAI_DW_NONPRD
           - DDAI_DW_PRD
-      branch:
-        description: 'Branch to run the workflow from'
-        required: true
-        type: choice
-        options:
-          - master
-          - qat
-        default: qat
 
 jobs:
   generate_and_commit:
@@ -28,8 +20,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-        with:
-          ref: ${{ inputs.branch }}
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -53,6 +43,12 @@ jobs:
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
+
+      - name: Delete existing multi_tenant_generation branch
+        run: |
+          git fetch origin
+          git push origin --delete multi_tenant_generation || true
+          git branch -D multi_tenant_generation || true
 
       - name: Commit changes
         run: |
