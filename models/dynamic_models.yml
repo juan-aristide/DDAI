@@ -9,13 +9,13 @@ dynamic_models:
           SELECT
             LOWER(CUSTOMER) AS CUSTOMER,
             LOWER(CUSTOMER_ENV) AS CUSTOMER_ENV
-          FROM int."INT__DISTINCT_CUSTOMERS"
+          FROM "TRN_INT".INT__DISTINCT_CUSTOMERS
       - name: model
         query: |
           SELECT
             LOWER(table_name) AS TABLE_NAME
           FROM INFORMATION_SCHEMA.TABLES
-          WHERE LOWER(TABLE_SCHEMA) = LOWER('CDM')
+          WHERE LOWER(TABLE_SCHEMA) = LOWER('TRN_CDM')
             AND TABLE_TYPE IN ('BASE TABLE', 'VIEW')
           ORDER BY TABLE_NAME
     sql: |
