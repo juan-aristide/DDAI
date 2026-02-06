@@ -1,1 +1,0 @@
-{{ customer_model('t_sales_opportunity', 'pqbxyyu2amgu') }}

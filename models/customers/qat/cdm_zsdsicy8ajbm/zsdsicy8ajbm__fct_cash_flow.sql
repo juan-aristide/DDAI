@@ -1,1 +1,0 @@
-{{ customer_model('fct_cash_flow', 'zsdsicy8ajbm') }}
