@@ -1,0 +1,21 @@
+name: PR Check
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+jobs:
+  placeholder-check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Placeholder check
+        run: |
+          echo "Placeholder check - replace with actual validation logic"
+          echo "This check always passes for now"
