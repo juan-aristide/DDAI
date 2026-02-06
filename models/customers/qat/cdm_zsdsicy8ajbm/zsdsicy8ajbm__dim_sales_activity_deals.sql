@@ -1,1 +1,0 @@
-{{ customer_model('dim_sales_activity_deals', 'zsdsicy8ajbm') }}

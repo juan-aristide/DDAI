@@ -1,1 +1,0 @@
-{{ customer_model('fct_sales_activity', 'pqbxyyu2amgu') }}
