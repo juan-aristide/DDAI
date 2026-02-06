@@ -1,1 +1,0 @@
-{{ customer_model('t_sales_activity', 'zsdsicy8ajbm') }}

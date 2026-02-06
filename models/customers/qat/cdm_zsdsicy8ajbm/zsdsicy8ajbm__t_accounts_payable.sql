@@ -1,1 +1,0 @@
-{{ customer_model('t_accounts_payable', 'zsdsicy8ajbm') }}

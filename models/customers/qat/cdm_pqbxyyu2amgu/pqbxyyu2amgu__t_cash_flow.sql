@@ -1,1 +1,0 @@
-{{ customer_model('t_cash_flow', 'pqbxyyu2amgu') }}
