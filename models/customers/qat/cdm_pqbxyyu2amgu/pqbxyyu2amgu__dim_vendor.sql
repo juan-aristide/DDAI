@@ -1,1 +1,0 @@
-{{ customer_model('dim_vendor', 'pqbxyyu2amgu') }}

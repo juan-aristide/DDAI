@@ -1,1 +1,0 @@
-{{ customer_model('fct_expenses_sales', 'zsdsicy8ajbm') }}
