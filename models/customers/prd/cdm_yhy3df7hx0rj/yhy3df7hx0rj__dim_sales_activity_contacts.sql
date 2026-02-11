@@ -1,0 +1,1 @@
+{{ customer_model('dim_sales_activity_contacts', 'yhy3df7hx0rj') }}

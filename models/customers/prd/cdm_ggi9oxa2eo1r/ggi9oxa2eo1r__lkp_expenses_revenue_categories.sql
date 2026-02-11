@@ -1,0 +1,1 @@
+{{ customer_model('lkp_expenses_revenue_categories', 'ggi9oxa2eo1r') }}

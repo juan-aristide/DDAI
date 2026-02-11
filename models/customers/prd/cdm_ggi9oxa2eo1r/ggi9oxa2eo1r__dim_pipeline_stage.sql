@@ -1,0 +1,1 @@
+{{ customer_model('dim_pipeline_stage', 'ggi9oxa2eo1r') }}
