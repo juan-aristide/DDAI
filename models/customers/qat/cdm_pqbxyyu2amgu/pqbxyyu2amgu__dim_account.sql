@@ -1,0 +1,1 @@
+{{ customer_model('dim_account', 'pqbxyyu2amgu') }}
