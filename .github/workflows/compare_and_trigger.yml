@@ -1,0 +1,34 @@
+name: Compare Data and Decide
+
+on:
+  repository_dispatch:
+    types: [fivetran_sync_complete]
+
+jobs:
+  analyze_sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install Dependencies
+        run: pip install psycopg2-binary requests
+
+      - name: Run Comparison Script
+        env:
+          # 1. Pass the payload as a JSON string
+          PAYLOAD: ${{ toJson(github.event.client_payload) }}
+          # 2. Pass DB Secrets
+          POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
+          POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
+          POSTGRES_DATABASE: DDAI_DW_DEV
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          # 3. Pass GitHub Token to trigger the next action
+          GH_TOKEN: ${{ secrets.ADMIN_PAT }} # or a PAT if triggering cross-repo
+        run: python .github/workflows/src/compare_and_dispatch.py
