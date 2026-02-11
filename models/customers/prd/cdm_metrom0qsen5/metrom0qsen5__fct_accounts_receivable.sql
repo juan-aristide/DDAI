@@ -1,0 +1,1 @@
+{{ customer_model('fct_accounts_receivable', 'metrom0qsen5') }}

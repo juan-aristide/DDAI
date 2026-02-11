@@ -1,0 +1,1 @@
+{{ customer_model('fct_accounts_payable', 'yhy3df7hx0rj') }}

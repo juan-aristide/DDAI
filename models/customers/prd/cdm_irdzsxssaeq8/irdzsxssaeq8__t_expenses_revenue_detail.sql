@@ -1,0 +1,1 @@
+{{ customer_model('t_expenses_revenue_detail', 'irdzsxssaeq8') }}

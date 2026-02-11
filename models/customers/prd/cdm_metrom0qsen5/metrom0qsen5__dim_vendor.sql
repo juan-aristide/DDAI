@@ -1,0 +1,1 @@
+{{ customer_model('dim_vendor', 'metrom0qsen5') }}
