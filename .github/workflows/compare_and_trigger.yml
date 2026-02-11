@@ -17,12 +17,13 @@ jobs:
           python-version: '3.9'
 
       - name: Install Dependencies
-        run: pip install psycopg2-binary requests
+        run: pip install -r .github/workflows/src/requirements.txt
 
       - name: Run Comparison Script
         env:
           # 1. Pass the payload as a JSON string
           PAYLOAD: ${{ toJson(github.event.client_payload) }}
+          DEST_GROUP_DB_MAP: ${{ vars.DEST_GROUP_DB_MAP }}
           # 2. Pass DB Secrets
           POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
           POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
