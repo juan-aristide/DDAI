@@ -1,0 +1,1 @@
+{{ customer_model('t_campaign_activity_metrics', 'c82h57nsjx97') }}

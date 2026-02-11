@@ -1,0 +1,1 @@
+{{ customer_model('t_balance_sheet', 'yhy3df7hx0rj') }}

@@ -1,0 +1,1 @@
+{{ customer_model('dim_date', 'c82h57nsjx97') }}

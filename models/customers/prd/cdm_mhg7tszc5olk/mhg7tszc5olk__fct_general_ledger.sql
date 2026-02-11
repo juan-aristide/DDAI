@@ -1,0 +1,1 @@
+{{ customer_model('fct_general_ledger', 'mhg7tszc5olk') }}

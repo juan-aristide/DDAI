@@ -1,0 +1,1 @@
+{{ customer_model('fct_profit_loss', 'yhy3df7hx0rj') }}
