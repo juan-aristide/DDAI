@@ -1,0 +1,1 @@
+{{ customer_model('fct_opportunity', 'c82h57nsjx97') }}

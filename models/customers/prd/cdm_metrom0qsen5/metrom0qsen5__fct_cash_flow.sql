@@ -1,0 +1,1 @@
+{{ customer_model('fct_cash_flow', 'metrom0qsen5') }}

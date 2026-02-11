@@ -1,0 +1,1 @@
+{{ customer_model('dim_campaigns', 'c82h57nsjx97') }}

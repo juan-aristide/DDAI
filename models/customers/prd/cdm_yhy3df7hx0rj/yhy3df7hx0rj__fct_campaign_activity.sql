@@ -1,0 +1,1 @@
+{{ customer_model('fct_campaign_activity', 'yhy3df7hx0rj') }}

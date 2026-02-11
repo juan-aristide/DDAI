@@ -1,0 +1,1 @@
+{{ customer_model('t_profit_loss_summary', 'ggi9oxa2eo1r') }}

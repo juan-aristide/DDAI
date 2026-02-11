@@ -1,0 +1,1 @@
+{{ customer_model('fct_balance_sheet', 'yhy3df7hx0rj') }}

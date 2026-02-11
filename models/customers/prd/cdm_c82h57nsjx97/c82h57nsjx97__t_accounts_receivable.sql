@@ -1,0 +1,1 @@
+{{ customer_model('t_accounts_receivable', 'c82h57nsjx97') }}
