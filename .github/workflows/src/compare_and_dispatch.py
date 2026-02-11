@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """Compare and dispatch script - processes repository_dispatch payload.
-   For now outputs the received payload for testing triggers in GitHub Actions UI.
-   Future: will use payload data + secrets to connect to Postgres (DDAI_DW_DEV).
+   Connects to Postgres and saves payload to gh_audit.actions.
 """
 
 import json
 import os
+
+import psycopg2
+from psycopg2.extras import Json
 
 
 def main():
@@ -17,7 +19,26 @@ def main():
     except json.JSONDecodeError:
         print("(raw - not valid JSON)")
         print(payload_str)
+        payload = {"raw": payload_str}
     print("=== End Payload ===")
+
+    conn = psycopg2.connect(
+        host=os.environ["POSTGRES_HOST"],
+        port=os.environ.get("POSTGRES_PORT", "5432"),
+        database=os.environ["POSTGRES_DATABASE"],
+        user=os.environ["POSTGRES_USER"],
+        password=os.environ["POSTGRES_PASSWORD"],
+    )
+    try:
+        with conn.cursor() as cur:
+            cur.execute(
+                "INSERT INTO gh_audit.actions (payload) VALUES (%s)",
+                (Json(payload),),
+            )
+        conn.commit()
+        print("Payload saved to gh_audit.actions")
+    finally:
+        conn.close()
 
 
 if __name__ == "__main__":
