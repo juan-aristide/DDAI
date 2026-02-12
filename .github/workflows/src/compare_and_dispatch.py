@@ -129,7 +129,7 @@ def main():
         print(f"Failed to trigger workflow: {resp.status_code} {resp.text}")
         sys.exit(1)
 
-    print(f"Triggered Auto_Tenant_models_generator with database={database}")
+    print(f"Triggered Auto_Tenant_models_generator for tenant='{tenant_id}' with database={database}")
 
 
 if __name__ == "__main__":
