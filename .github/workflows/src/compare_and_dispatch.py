@@ -56,6 +56,10 @@ def main():
         print("Could not extract tenantId from connector_name")
         sys.exit(1)
 
+    if tenant_id.lower() == "fivetran":
+        print("Ignoring connector with tenantId 'fivetran'. Exiting.")
+        sys.exit(0)
+
     # Tenant existence check
     start_path = os.path.dirname(os.path.abspath(__file__))
     project_root = find_project_root(start_path)
